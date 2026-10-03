@@ -10,10 +10,7 @@ import java.io.InputStreamReader;
 
 import jade.content.lang.sl.SLCodec;
 import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
-import jade.core.behaviours.ParallelBehaviour;
-import jade.core.behaviours.ThreadedBehaviourFactory;
+import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.domain.DFService;
@@ -58,41 +55,7 @@ public class Agente extends Agent {
 		addBehaviour(compoundBehaviour);
 	}
 	
-	AID[] searchServiceAgents(String serviceType) {
-		DFAgentDescription template = new DFAgentDescription();
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType(serviceType);
-		template.addServices(sd);
-
-		try {
-			DFAgentDescription[] results = DFService.search(this, template);
-			AID[] agentIds = new AID[results.length];
-			for (int i = 0; i < results.length; i++)
-				agentIds[i] = results[i].getName();
-			return agentIds;
-		}
-		catch (FIPAException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	class CyclicBehaviourImprimir extends CyclicBehaviour {
-
-		public CyclicBehaviourImprimir(Agent agent) {
-			super(agent);
-		}
-
-		public void action() {
-			ACLMessage msg = myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			if (msg != null) {
-				System.out.println(" - Mensaje de " + msg.getSender().getLocalName() + ": " + msg.getContent());
-			}
-			else {
-				block();
-			}
-		}
-	}
+	// FALTAN COSAS AQUI
 	
 	public void takeDown() {
 		try {
@@ -133,7 +96,7 @@ class OneShotBehaviourEnviar extends OneShotBehaviour {
 			e.printStackTrace();
 		}
 		
-		arrAgentIds = ((Agente) myAgent).searchServiceAgents("Mensajeria");
+		arrAgentIds = searchServiceAgents("Mensajeria");
 		if(arrAgentIds != null) {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.setSender(myAgent.getAID());
