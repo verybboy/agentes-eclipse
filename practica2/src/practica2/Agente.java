@@ -6,9 +6,14 @@ import jade.core.Agent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import jade.content.lang.sl.SLCodec;
 import jade.core.AID;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.ParallelBehaviour;
+import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.domain.DFService;
@@ -42,14 +47,52 @@ public class Agente extends Agent {
 			DFService.register(this, dfd);
 		}
 		catch(FIPAException e) {
-			System.err.println(" -Agente" + getLocalName() + ": " ) //FALTA TERMINAR ESTA LINEA
+			System.err.println(" -Agente" + getLocalName() + ": " + e.getMessage());
 		}
 		
-		compoundBehaviour = new ParallelBehaviour(this, ParallelBehaviour);
-		//FALTAN COSAS AQUI 
+		compoundBehaviour = new ParallelBehaviour(this, ParallelBehaviour.WHEN_ALL);
+		messageSender = new OneShotBehaviourEnviar(this);
+		messageReceiver = new CyclicBehaviourImprimir(this);
+		compoundBehaviour.addSubBehaviour(thrBFSender.wrap(messageSender));
+		compoundBehaviour.addSubBehaviour(thrBFReciever.wrap(messageReceiver));
+		addBehaviour(compoundBehaviour);
 	}
 	
-	// FALTAN COSAS AQUI
+	AID[] searchServiceAgents(String serviceType) {
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType(serviceType);
+		template.addServices(sd);
+
+		try {
+			DFAgentDescription[] results = DFService.search(this, template);
+			AID[] agentIds = new AID[results.length];
+			for (int i = 0; i < results.length; i++)
+				agentIds[i] = results[i].getName();
+			return agentIds;
+		}
+		catch (FIPAException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	class CyclicBehaviourImprimir extends CyclicBehaviour {
+
+		public CyclicBehaviourImprimir(Agent agent) {
+			super(agent);
+		}
+
+		public void action() {
+			ACLMessage msg = myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			if (msg != null) {
+				System.out.println(" - Mensaje de " + msg.getSender().getLocalName() + ": " + msg.getContent());
+			}
+			else {
+				block();
+			}
+		}
+	}
 	
 	public void takeDown() {
 		try {
@@ -90,7 +133,7 @@ class OneShotBehaviourEnviar extends OneShotBehaviour {
 			e.printStackTrace();
 		}
 		
-		arrAgentIds = searchServiceAgents("Mensajeria");
+		arrAgentIds = ((Agente) myAgent).searchServiceAgents("Mensajeria");
 		if(arrAgentIds != null) {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.setSender(myAgent.getAID());
