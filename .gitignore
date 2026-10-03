@@ -1,0 +1,18 @@
+# Eclipse workspace
+.metadata/
+
+# Archivos compilados
+bin/
+target/
+*.class
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Temporales
+*.tmp
+*.swp
