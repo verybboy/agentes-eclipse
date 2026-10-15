@@ -1,0 +1,2 @@
+El buscador creo que se lanza con la run configuration -gui
+Y el cliente se lanza con la run configuration -container
