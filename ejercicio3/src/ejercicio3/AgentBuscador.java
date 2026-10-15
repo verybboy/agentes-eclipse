@@ -48,8 +48,8 @@ public class AgentBuscador extends Agent {
 		System.out.println("Soy el agente " + getLocalName());
 		
 		// Agrego los urls donde el comportamiento va a buscar la noticia .	
-		//urlSources.addUrl("https://www.elmundo.es/index.html");
-		urlSources.addUrl("https://www.salamanca24horas.com");
+		urlSources.addUrl("https://www.elmundo.es/index.html");
+		//urlSources.addUrl("https://www.salamanca24horas.com");
 		//urlSources.addUrl("https://www.elpais.com");
     	
 		// Publicando el servicio "Buscador".
