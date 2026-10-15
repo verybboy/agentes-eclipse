@@ -1,5 +1,5 @@
 /**
- * 
+ * ESTE EJERCICIO HACE REFERENCIA AL ENUNCIADO - Práctica 3. Implementación de agentes
  */
 package ejercicio3;
 
@@ -48,9 +48,9 @@ public class AgentBuscador extends Agent {
 		System.out.println("Soy el agente " + getLocalName());
 		
 		// Agrego los urls donde el comportamiento va a buscar la noticia .	
-		urlSources.addUrl("https://www.elmundo.es/index.html");
+		//urlSources.addUrl("https://www.elmundo.es/index.html");
 		urlSources.addUrl("https://www.salamanca24horas.com");
-		urlSources.addUrl("https://www.elpais.com");
+		//urlSources.addUrl("https://www.elpais.com");
     	
 		// Publicando el servicio "Buscador".
 		// Crear y registrar el servicio de tipo "buscar".	
@@ -165,7 +165,7 @@ class CyclicBehaviourBuscar extends CyclicBehaviour{
 		}
 	}
 	
-	public List<String> buscarCadena(String cadena)
+	public List<String> buscarCadena(String cadena) //Tenemos el metodo en studium "Metodo buscarCadena()"
 	{
 		//String sitios[]={"http://www.elmundo.es/index.html","http://www.salamanca24horas.com/sociedad","http://www.elpais.com"};
 		URL url;
